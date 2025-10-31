@@ -1,1 +1,1 @@
-# JSPLastProject
+자바 JSP 최종 프로젝트
