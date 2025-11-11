@@ -37,7 +37,10 @@ public class JjimModel {
   public String jjim_list(HttpServletRequest request,
 		  HttpServletResponse response)
   {
-	  
+	  HttpSession session=request.getSession();
+	  String id=(String)session.getAttribute("id");
+	  List<JjimVO> list=JjimDAO.jjimFoodListData(id);
+	  request.setAttribute("list", list);
 	  request.setAttribute("mypage_jsp", "../jjim/jjim_list.jsp");
 	  request.setAttribute("main_jsp", "../mypage/mypage_main.jsp");
 	  return "../main/main.jsp";
