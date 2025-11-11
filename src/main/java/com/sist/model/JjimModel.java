@@ -43,6 +43,6 @@ public class JjimModel {
 	  request.setAttribute("list", list);
 	  request.setAttribute("mypage_jsp", "../jjim/jjim_list.jsp");
 	  request.setAttribute("main_jsp", "../mypage/mypage_main.jsp");
-	  return "../main/main.jsp";
+	  return "../main/main.jsp"; 
   }
 }
