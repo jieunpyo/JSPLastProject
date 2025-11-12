@@ -1,5 +1,9 @@
 package com.sist.model;
+import java.io.PrintWriter;
 import java.util.*;
+
+import org.json.simple.JSONObject;
+
 import com.sist.vo.*;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -60,6 +64,25 @@ public class JjimModel {
   {
 	  String fno=request.getParameter("fno");
 	  FoodVO vo=JjimDAO.foodDetailData(Integer.parseInt(fno));
-	  
+      JSONObject obj=new JSONObject();
+      obj.put("name", vo.getName());
+      obj.put("poster", vo.getPoster());
+      obj.put("address", vo.getAddress());
+      obj.put("phone", vo.getPhone());
+      obj.put("price", vo.getPrice());
+      obj.put("parking", vo.getParking());
+      obj.put("type", vo.getType());
+      obj.put("theme", vo.getTheme());
+      obj.put("content", vo.getContent());
+      obj.put("time", vo.getTime());
+      obj.put("score", vo.getScore());
+      
+      try
+      {
+    	  response.setContentType("text/plain;charset=UTF-8");
+    	  PrintWriter out=response.getWriter();
+    	  out.write(obj.toJSONString());
+      }catch(Exception ex) {}
+      
   }
 }

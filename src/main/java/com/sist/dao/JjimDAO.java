@@ -77,17 +77,17 @@ public class JjimDAO {
 		   ex.printStackTrace();
 	   }
    }
-   // 마이페이지에 출력
+   // 마이페이지에 출력 
    /*
-    * 	<select id="jjimFoodListData" resultMap="jjimMap"
-		    parameterType="string"
-		   >
-		     SELECT jno,aj.type,rno,name,poster
-		     FROM all_jjim aj, menupan_food mf
-		     WHERE aj.rno=mf.fno
-		     AND id=#{id} AND aj.type=1
-		     ORDER BY jno DESC
-		   </select>
+    *   <select id="jjimFoodListData" resultMap="jjimMap"
+		   parameterType="string"
+		  >
+		    SELECT jno,aj.type,rno,name,poster
+		    FROM all_jjim aj, menupan_food mf
+		    WHERE aj.rno=mf.fno
+		    AND id=#{id} AND aj.type=1
+		    ORDER BY jno DESC
+		  </select>
     */
    public static List<JjimVO> jjimFoodListData(String id)
    {
@@ -104,10 +104,10 @@ public class JjimDAO {
 	   return list;
    }
    /*
-    * 	 <delete id="jjimCancel" parameterType="int">
-     DELECT FROM all_jjim
-     WHERE jno=#{jno}
-   </delete>
+    *   <delete id="jjimCancel" parameterType="int">
+    DELETE FROM all_jjim
+    WHERE jno=#{jno}
+  </delete>
     */
    public static void jjimCancel(int jno)
    {
@@ -122,7 +122,7 @@ public class JjimDAO {
 	   }
    }
    /*
-    * 	<select id="foodDetailData" resultType="FoodVO"
+    *  <select id="foodDetailData" resultType="FoodVO"
 		    parameterType="int"
 		  >
 		    SELECT * FROM menupan_food
@@ -135,7 +135,7 @@ public class JjimDAO {
 	   try
 	   {
 		   SqlSession session=ssf.openSession();
-		   vo=session.selectOne("",fno);
+		   vo=session.selectOne("foodDetailData",fno);
 		   session.close();
 	   }catch(Exception ex)
 	   {

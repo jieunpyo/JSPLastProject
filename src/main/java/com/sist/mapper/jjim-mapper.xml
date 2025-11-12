@@ -27,42 +27,42 @@
   <!-- 
      마이페이지 출력 = 취소 
      
-     class JjimVO
+     class JjimVO 
      {
-        int jon;
+        int jno;
         String id;
-        FoodVO fno=new FoodVO()
+        FoodVO fvo=new FoodVO()
      }
      SELECT jno,id,name,poster
      FROM jjim,food
      ResultSet rs=ps.executeQuery();
      while(rs.next())
      {
-        JjimVO vo=new JjimVO();
+        JjimVO vo=new JjjimVO();
         vo.setJno(rs.getInt("jno"))
         vo.setId(rs.getString("id"))
         vo.fvo.setName(rs.getString("name"))
         vo.fvo.setPoster(rs.getString("poster"))
      }
    -->
-   <resultMap type="JjimVO" id="jjimMap">
-     <result property="fvo.name" column="name"/>
-     <!-- fvo.setName(rs.getString("name")) -->
-     <result property="fvo.poster" column="poster"/>
-     <result property="fvo.fno" column="fno"/>
-     <result property="fvo.address" column="address"/>
-   </resultMap>
-   <select id="jjimFoodListData" resultMap="jjimMap"
-    parameterType="string"
-   >
-     SELECT jno,aj.type,rno,name,poster,address,fno
-     FROM all_jjim aj, menupan_food mf
-     WHERE aj.rno=mf.fno
-     AND id=#{id} AND aj.type=1
-     ORDER BY jno DESC
-   </select>
-   <delete id="jjimCancel" parameterType="int">
-     DELETE FROM all_jjim
-     WHERE jno=#{jno}
-   </delete>
+  <resultMap type="JjimVO" id="jjimMap">
+    <result property="fvo.name" column="name"/>
+    <!-- fvo.setName(rs.getString("name")) -->
+    <result property="fvo.poster" column="poster"/>
+    <result property="fvo.fno" column="fno"/>
+    <result property="fvo.address" column="address"/>
+  </resultMap>
+  <select id="jjimFoodListData" resultMap="jjimMap"
+   parameterType="string"
+  >
+    SELECT jno,aj.type,rno,name,poster,address,fno
+    FROM all_jjim aj, menupan_food mf
+    WHERE aj.rno=mf.fno
+    AND id=#{id} AND aj.type=1
+    ORDER BY jno DESC
+  </select>
+  <delete id="jjimCancel" parameterType="int">
+    DELETE FROM all_jjim
+    WHERE jno=#{jno}
+  </delete>
 </mapper>
