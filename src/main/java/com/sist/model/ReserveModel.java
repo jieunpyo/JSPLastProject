@@ -5,7 +5,9 @@ import com.sist.controller.RequestMapping;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
+import java.util.*;
+import com.sist.dao.*;
+import com.sist.vo.*;
 @Controller
 public class ReserveModel {
    @RequestMapping("reserve/reserve_main.do")
@@ -14,5 +16,14 @@ public class ReserveModel {
    {
 	   request.setAttribute("main_jsp", "../reserve/reserve_main.jsp");
 	   return "../main/main.jsp";
+   }
+   @RequestMapping("reserve/reserve_food.do")
+   public String reserve_food(HttpServletRequest request,
+		   HttpServletResponse response)
+   {
+	   String type=request.getParameter("type");
+	   List<FoodVO> list=ReserveDAO.reserveFoodListData(type);
+	   request.setAttribute("list", list);
+	   return "../reserve/reserve_food.jsp";
    }
 }

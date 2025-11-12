@@ -15,18 +15,17 @@ import org.json.simple.parser.JSONParser;
 
 public class NewsManager {
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
 		Scanner scan=new Scanner(System.in);
 		System.out.print("검색어:");
 		String fd=scan.next();
 		String json=newsSearch(fd);
 		System.out.println(json);
 	}
-
     public static String newsSearch(String fd) {
     	String json="";
-        String clientId = "Qhq0RZY8igTAFzmsAV6u"; //애플리케이션 클라이언트 아이디
-        String clientSecret = "2wV8KO2d2Z"; //애플리케이션 클라이언트 시크릿
+        String clientId = "OtKU74j2Bx_QN_K5YPck"; //애플리케이션 클라이언트 아이디
+        String clientSecret = "eyn6LY7L0j"; //애플리케이션 클라이언트 시크릿
 
 
         String text = null;
@@ -50,9 +49,9 @@ public class NewsManager {
         {
         	JSONParser jp=new JSONParser();
         	// {  [
-        	JSONObject root=(JSONObject)jp.parse(responseBody);
+        	JSONObject root=(JSONObject)jp.parse(responseBody); 
         	JSONArray arr=(JSONArray)root.get("items");
-        	System.out.println(arr.toJSONString());
+        	//System.out.println(arr.toJSONString());
         	JSONArray newsData=new JSONArray();
         	for(int i=0;i<arr.size();i++)
         	{
