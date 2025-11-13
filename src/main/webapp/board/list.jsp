@@ -72,7 +72,7 @@
 	                   <c:if test="${today==vo.dbday }">
 	                    &nbsp;<sup><img src="../board/images/new.gif"></sup>
 	                   </c:if>
-	                  </td>
+	                  </td>z
 	                  <td class="text-center" width="15%">${vo.name }</td>
 	                  <td class="text-center" width="20%">${vo.dbday }</td>
 	                  <td class="text-center" width="10%">${vo.hit }</td>
