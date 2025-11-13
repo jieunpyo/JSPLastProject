@@ -42,7 +42,6 @@
 			  data:{"type":"한식"},
 			  success:function(result)
 			  {
-			      alert(result)
 				  $('#food_list').html(result)
 			  }
 		  })
@@ -69,9 +68,7 @@
           <div class="card-body text-center" id="food_rdays">
             <p class="text-muted">날짜를 선택하세요</p>
             <div class="d-flex justify-content-center flex-wrap gap-2">
-              <button class="btn btn-outline-info btn-sm" onclick="pickDay('2025-11-18')">2025-11-18</button>
-              <button class="btn btn-outline-info btn-sm" onclick="pickDay('2025-11-19')">2025-11-19</button>
-              <button class="btn btn-outline-info btn-sm" onclick="pickDay('2025-11-20')">2025-11-20</button>
+              
             </div>
           </div>
         </div>
