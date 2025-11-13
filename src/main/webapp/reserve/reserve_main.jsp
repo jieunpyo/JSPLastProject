@@ -115,11 +115,9 @@
       <div class="col-md-4">
         <div class="card">
           <div class="card-header bg-info text-white text-center">인원 정보</div>
-          <div class="card-body text-center" id="reserve_inwon">
-            <div class="d-flex justify-content-center gap-2 flex-wrap">
-              <button class="btn btn-outline-success btn-sm" onclick="pickInwon(2)">2명</button>
-              <button class="btn btn-outline-success btn-sm" onclick="pickInwon(4)">4명</button>
-              <button class="btn btn-outline-success btn-sm" onclick="pickInwon(6)">6명</button>
+          <div class="card-body text-center">
+            <div class="d-flex justify-content-center gap-2 flex-wrap" id="reserve_inwon">
+              
             </div>
           </div>
         </div>

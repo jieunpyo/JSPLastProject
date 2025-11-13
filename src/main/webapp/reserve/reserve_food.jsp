@@ -22,7 +22,7 @@ $(function(){
 	     })
 	 })
 	 $('.food-item').click(function(){
-		 let fno=$(this).attr("data-no")
+		 let fno=$(this).attr("data-fno")
 		 let poster=$(this).attr("data-poster")
 		 let name=$(this).attr("data-name")
 		 $('#food_poster').attr("src",poster)

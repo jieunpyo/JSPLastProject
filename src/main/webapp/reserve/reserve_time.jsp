@@ -1,6 +1,27 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core"%>
+<%--
+		아키텍처 : 요구사항 
+		  |
+	  ------------
+	  |		|	 |
+	 PM	   PM	 PM  
+	  |
+   ------
+   |	|
+  PL   PL=> 데이터베이스 설계 
+  => 서버단	View DA단
+  				 | DAO
+  			| Front
+  	  | => Model
+   |
+  -----
+  |	  |
+ 2년	 1년
+  |
+ 신입
+ --%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -12,7 +33,14 @@ $(function(){
 		let time=$(this).text();
 		$('#food_reserve_time').text(time)
 		$('#rtime').val(time)
-		
+		$.ajax({
+			type:'get',
+			url:'../reserve/reserve_inwon.do',
+			success:function(result)
+			{
+				$('#reserve_inwon').html(result)
+			}
+		})
 	})
 })
 </script>
