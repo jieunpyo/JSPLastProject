@@ -8,12 +8,52 @@
 <title>Insert title here</title>
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<style type="text/css">
+.day-link{
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  line-height: 32px;
+  border-radius: 50px;
+  border: 2px solid #4caf50;
+  color: #4caf50;
+  font-weight: bold;
+  transition: all 0.2s;
+}
+.day-link:hover{
+  background-color: #4caf50;
+}
+</style>
+<script type="text/javascript">
+$(function(){
+	$(".day-link").click(function(){
+		let day=$(this).text()
+		//alert("선택한 날짜:"+day)
+		let year=$('#year').text()
+		let month=$('#month').text()
+		let date=year+"-"+month+"-"+day
+		//alert(date)
+		$('#food_reserve_day').text(date)
+		$('#rdays').val(date)
+		
+		$.ajax({
+			type:'post',
+			url:'../reserve/reserve_time.do',
+			data:{"day":day},
+			success:function(result)
+			{
+				$('#reserve_time2').html(result)
+			}
+		})
+	})
+})
+</script>
 </head>
 <body>
   <table class="table">
    <tr>
     <td colspan="7">
-     <h3>${year }년 ${month }월</h3>
+     <h3><span id="year">${year }</span>년 <span id="month">${month }</span>월</h3>
     </td>
    </tr>
    <tr>
@@ -57,7 +97,14 @@
          <td class="text-center">&nbsp;</td> 
        </c:forEach>
      </c:if>
-     <td class="text-center"><h4 style="color:${style}">${i}</h4></td>
+     
+     <c:if test="${day>i }">
+     <td class="text-center"><h4 style="color:gray">${i}</h4></td>
+     </c:if>
+     <c:if test="${day<=i }">
+     <td class="text-center"><h4 class="day-link" style="color:${style}">${i}</h4></td>
+     </c:if>
+     
      <c:set var="week" value="${week+1 }"/>
      <c:if test="${week>6}">
        <c:set var="week" value="0"/>

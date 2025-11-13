@@ -90,7 +90,7 @@
             </table>
             <form method="post" action="../reserve/reserve_insert.do" id="reserveBtn" style="display:none">
               <input type="hidden" name="fno" id="rfno">
-              <input type="hidden" name="day" id="rday">
+              <input type="hidden" name="day" id="rdays">
               <input type="hidden" name="time" id="rtime">
               <input type="hidden" name="inwon" id="rinwon">
               <button type="submit" class="btn btn-primary w-100">예약하기</button>
@@ -101,20 +101,18 @@
     </div>
 
     <div class="row g-4 mt-3">
-      <div class="col-md-4">
+      <div class="col-md-8">
         <div class="card">
           <div class="card-header bg-primary text-white text-center">시간 정보</div>
           <div class="card-body text-center" id="reserve_time2">
-            <div class="d-flex justify-content-center gap-2 flex-wrap">
-              <button class="btn btn-outline-primary btn-sm">11:00</button>
-              <button class="btn btn-outline-primary btn-sm">12:00</button>
-              <button class="btn btn-outline-primary btn-sm">18:00</button>
+            <div class="d-flex justify-content-center gap-2 flex-wrap" id="reserve_time2">
+              
             </div>
           </div>
         </div>
       </div>
 
-      <div class="col-md-8">
+      <div class="col-md-4">
         <div class="card">
           <div class="card-header bg-info text-white text-center">인원 정보</div>
           <div class="card-body text-center" id="reserve_inwon">
