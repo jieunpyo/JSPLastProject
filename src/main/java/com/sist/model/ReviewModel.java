@@ -82,4 +82,33 @@ public class ReviewModel {
 	  }
 	  return url;
   }
+  @RequestMapping("review/review_update.do")
+  public String review_update(HttpServletRequest request,
+		  HttpServletResponse response)
+  {
+	  try
+	  {
+		  request.setCharacterEncoding("UTF-8");
+	  }catch(Exception ex) {}
+	  String msg=request.getParameter("msg");
+	  String cno=request.getParameter("cno");
+	  String page=request.getParameter("page");
+	  String type=request.getParameter("type");
+	  String no=request.getParameter("no");
+	  ReviewVO vo=new ReviewVO();
+	  vo.setMsg(msg);
+	  vo.setNo(Integer.parseInt(no));
+	  // DB 연동
+	  ReviewDAO.reviewUpdate(vo);
+	  String url="";
+	  if(Integer.parseInt(type)==1)
+	  {
+		  url="redirect:../food/detail.do?fno="+cno+"&page="+page;
+	  }
+	  else
+	  {
+		  url="redirect:../recipt/detail.do?no="+cno+"&page="+page;
+	  }
+	  return url;
+  }
 }

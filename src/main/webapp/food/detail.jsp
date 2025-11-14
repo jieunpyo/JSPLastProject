@@ -92,6 +92,27 @@ $(function(){
 		}
 		
 	})
+	// 댓글 수정 
+	let bcheck=false
+	$('.btns').click(function(){
+		let no=$(this).attr("data-no")
+		$('.forms').hide()
+		$('.btns').val("수정")
+		if(bcheck===false)
+		{
+			$('.btns').text("수정")
+			bcheck=true
+			$('#form'+no).show()
+			$(this).val("취소")
+		}
+		else
+		{
+			
+			bcheck=false
+			$('#form'+no).hide()
+			$(this).val("수정")
+		}
+	})
 })
 </script>
 </head>
@@ -292,10 +313,20 @@ $(function(){
 	          <div class="review-text">${rvo.msg }</div>
 	          <c:if test="${sessionScope.id==rvo.id }">
 		          <div class="review-meta">
-		            <div><input type=button value="수정" class="btn-xs btn-primary"></div>
+		            <div><input type=button value="수정" class="btn-xs btn-primary btns" data-no="${rvo.no }"></div>
 		            <div><a href="../review/review_delete.do?no=${rvo.no }&type=1&cno=${rvo.cno}&page=${page}" class="btn btn-xs btn-danger">삭제</a></div>
 		          </div>
 	          </c:if>
+	          <form class="review-form forms" method="post" action="../review/review_update.do"
+	            id="form${rvo.no }" style="display: none"
+	          >
+		         <input type="hidden" name="cno" value="${vo.fno }">
+		         <input type="hidden" name="page" value="${page }">
+		         <input type="hidden" name="type" value="1">
+		         <input type="hidden" name="no" value="${rvo.no}">
+		         <input type=text name=msg placeholder="리뷰입력" required value="${rvo.msg }">
+		         <button type="submit">수정</button>
+		       </form>
 	         </li>
         </c:forEach>
         </ul>
