@@ -51,5 +51,30 @@ public class CartDAO {
 			  ex.printStackTrace();
 		  }
 	  }
-	  
+	  /*
+	   * <select id="cartMyListData" parameterType="string"
+		   resultMap="cartMap"
+		  >
+		    SELECT cart.no,goods_poster,goods_name,goods_price,
+		    	   account,TO_CHAR(regdate,'YYYY-MM-DD') as dbday
+		    FROM cart,goods_all
+		    WHERE cart.gno=goods_all.no
+		    AND id=#{id}
+		    ORDER BY no DESC
+		  </select>
+	   */
+	  public static List<CartVO> cartMyListData(String id)
+	  {
+		  List<CartVO> list=null;
+		  try
+		  {
+			  SqlSession session=ssf.openSession();
+			  list=session.selectList("cartMyListData",id);
+			  session.close();
+		  }catch(Exception ex)
+		  {
+			  ex.printStackTrace();
+		  }
+		  return list;
+	  }
 }

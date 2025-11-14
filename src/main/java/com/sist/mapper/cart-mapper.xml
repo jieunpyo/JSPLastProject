@@ -23,4 +23,19 @@
     FROM cart
     WHERE gno=#{gno} AND id=#{id}
   </select>
+  <resultMap type="com.sist.vo.CartVO" id="cartMap">
+    <result column="goods_poster" property="gvo.goods_poster"/>
+    <result column="goods_name" property="gvo.goods_name"/>
+    <result column="goods_price" property="gvo.goods_price"/>
+  </resultMap>
+  <select id="cartMyListData" parameterType="string"
+   resultMap="cartMap"
+  >
+    SELECT cart.no,goods_poster,goods_name,goods_price,
+    	   account,TO_CHAR(regdate,'YYYY-MM-DD') as dbday
+    FROM cart,goods_all
+    WHERE cart.gno=goods_all.no
+    AND id=#{id}
+    ORDER BY no DESC
+  </select>
 </mapper>
