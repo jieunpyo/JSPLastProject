@@ -35,6 +35,7 @@ import jakarta.servlet.http.HttpServletResponse;
 @Controller
 public class BoardModel {
    @RequestMapping("board/list.do")
+   // board_list(int page)
    public String board_list(HttpServletRequest request,
 		   HttpServletResponse response)
    {

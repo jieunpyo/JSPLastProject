@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sist.mapper.cart-mapper">
+  <insert id="cartInsert" parameterType="com.sist.vo.CartVO">
+    INSERT INTO cart VALUES(
+      cart_no_seq.nextval,
+      #{gno},
+      #{id},
+      #{account},
+      0,
+      SYSDATE
+    )
+  </insert>
+  <update id="cartUpdate" parameterType="com.sist.vo.CartVO">
+    UPDATE cart SET
+    account=account+#{account}
+    WHERE gno=#{gno} AND id=#{id}
+  </update>
+  <select id="cartCount" parameterType="com.sist.vo.CartVO"
+   resultType="int"
+  >
+    SELECT COUNT(*)
+    FROM cart
+    WHERE gno=#{gno} AND id=#{id}
+  </select>
+</mapper>
