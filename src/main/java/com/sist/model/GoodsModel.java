@@ -1,0 +1,279 @@
+package com.sist.model;
+
+import com.sist.controller.Controller;
+import com.sist.controller.RequestMapping;
+
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+
+import java.util.*;
+import com.sist.dao.*;
+import com.sist.vo.*;
+@Controller
+public class GoodsModel {
+  private String[] table_name={
+	  "",
+	  "goods_all",
+	  "goods_best",
+	  "goods_new",
+	  "goods_special"
+  };
+  private String[] titles= {
+	  "",
+	  "상품 전체 목록",
+	  "베스트 상품 목록",
+	  "신상품 목록",
+	  "특가 상품 목록"
+  };
+  @RequestMapping("goods/buy.do")
+  public String goods_buy(HttpServletRequest request,
+		  HttpServletResponse response)
+  {
+	  String gno=request.getParameter("gno");
+	  String account=request.getParameter("account");
+	  HttpSession session=request.getSession();
+	  String id=(String)session.getAttribute("id");
+	  Map map=new HashMap();
+	  map.put("no", gno);
+	  map.put("goods", "goods_all");
+	  GoodsVO gvo=GoodsDAO.goodsDetailData(map);
+	  MemberVO mvo=MemberDAO.memberInfoData(id);
+	  
+	  // cart.jsp에 데이터 전송 
+	  // Model => return에 있는 jsp가 받는다 
+	  // => include => 공유가 가능
+	  request.setAttribute("mvo", mvo);
+	  request.setAttribute("gvo", gvo);
+	  request.setAttribute("account", account);
+	  String strPrice=gvo.getGoods_price();
+	  strPrice=strPrice.replaceAll("[^0-9]", "");
+	  // 30000 30000
+	  int price=Integer.parseInt(strPrice);
+	  int total=price*Integer.parseInt(account);
+	  request.setAttribute("price", price);
+	  request.setAttribute("total", total);
+	  return "../goods/cart.jsp";
+  }
+  @RequestMapping("goods/list.do")
+  public String goods_list(HttpServletRequest request,
+		  HttpServletResponse response)
+  {
+	  String page=request.getParameter("page");
+	  if(page==null)
+		  page="1";
+	  int curpage=Integer.parseInt(page);
+	  String cno=request.getParameter("cno");
+	  Map map=new HashMap();
+	  int rowSize=12;
+	  int start=(curpage*rowSize)-(rowSize-1);
+	  int end=curpage*rowSize;
+	  map.put("goods", table_name[Integer.parseInt(cno)]);
+	  map.put("start", start);
+	  map.put("end", end);
+	  List<GoodsVO> list=
+			  GoodsDAO.goodsListData(map);
+	  int totalpage=GoodsDAO.goodsTotalPage(map);
+	  
+	   // 블록별 처리 
+	   final int BLOCK=10;
+	   int startPage=((curpage-1)/BLOCK*BLOCK)+1;
+	   // curpage => 1~10 : 1 , 11~20 : 11
+	   int endPage=((curpage-1)/BLOCK*BLOCK)+BLOCK;
+	   
+	   if(endPage>totalpage)
+		   endPage=totalpage;
+	   
+	   // 브라우저 전송 
+	   request.setAttribute("list", list);
+	   request.setAttribute("curpage", curpage);
+	   request.setAttribute("totalpage", totalpage);
+	   request.setAttribute("startPage", startPage);
+	   request.setAttribute("endPage", endPage);
+	   request.setAttribute("cno", cno);
+	   request.setAttribute("title", titles[Integer.parseInt(cno)]);
+	   
+	   
+	   HttpSession session=request.getSession();
+	   String id=(String)session.getAttribute("id");
+	   List<GoodsVO> cList=new ArrayList<GoodsVO>();
+	   
+	   if(id!=null) // 로그인된 상태
+	   {
+		   Cookie[] cookies=request.getCookies();
+		   if(cookies!=null)
+		   {
+			   for(int i=cookies.length-1;i>=0;i--)
+			   {
+				   if(cookies[i].getName().startsWith("goods_"+id))
+				   {
+					   String etc=cookies[i].getValue();
+					   
+					   // 테이블명 / no 
+					   StringTokenizer st=new StringTokenizer(etc,"-");
+					   String no=st.nextToken();
+					   String c=st.nextToken();
+					   Map map1=new HashMap();
+					   map1.put("no", no);
+					   map1.put("goods", table_name[Integer.parseInt(c)]);
+					   GoodsVO gvo=GoodsDAO.goodsCookieData(map1);
+					   cList.add(gvo);
+				   }
+			   }
+			   
+		   }
+		   request.setAttribute("cList", cList);
+	   }
+	   
+	   // 화면 출력 
+	   request.setAttribute("main_jsp", "../goods/list.jsp");
+	  
+	  return "../main/main.jsp";
+  }
+  
+  @RequestMapping("goods/detail_before.do")
+  public String goods_detail_before(HttpServletRequest request,
+		  HttpServletResponse response)
+  {
+	  String no=request.getParameter("no");
+	  String page=request.getParameter("page");
+	  String cno=request.getParameter("cno");
+	  
+	  HttpSession session=request.getSession();
+	  String id=(String)session.getAttribute("id");
+	  if(id!=null)
+	   {
+		   Cookie[] cookies=request.getCookies();
+		   if(cookies!=null)
+		   {
+			   for(int i=0;i<cookies.length;i++)
+			   {
+				   if(cookies[i].getName().equals("goods_"+id+"_"+no+"_"+cno))
+				   {
+					   cookies[i].setMaxAge(0);
+					   response.addCookie(cookies[i]);
+					   break;
+				   }
+			   }
+		   }
+		   Cookie cookie=new Cookie("goods_"+id+"_"+no+"_"+cno, no+"-"+cno);
+		   cookie.setMaxAge(60*60*24);
+		   response.addCookie(cookie);
+	   }
+	  return "redirect:../goods/detail.do?no="+no+"&page="+page+"&cno="+cno;
+  }
+  
+  @RequestMapping("goods/detail.do")
+  public String goods_detail(HttpServletRequest request,
+		  HttpServletResponse response)
+  {
+	  String no=request.getParameter("no");
+	  String page=request.getParameter("page");
+	  String cno=request.getParameter("cno");
+	  
+	  Map map=new HashMap();
+	  map.put("no", no);
+	  // #{no} ${goods}
+	  map.put("goods", table_name[Integer.parseInt(cno)]);
+	  GoodsVO vo=GoodsDAO.goodsDetailData(map);
+	  String price=vo.getGoods_price();
+	  price=price.replaceAll("[^0-9]", ""); // , 원
+	  vo.setPrice(Integer.parseInt(price));
+	  request.setAttribute("vo", vo);
+	  request.setAttribute("cno", cno);
+	  request.setAttribute("page", page);
+	  
+	  request.setAttribute("main_jsp", "../goods/detail.jsp");
+	  return "../main/main.jsp";
+  }
+  @RequestMapping("goods/payment.do")
+  public String goods_payment(HttpServletRequest request,
+		  HttpServletResponse response)
+  {
+	  request.setAttribute("main_jsp", "../goods/payment.jsp");
+	  return "../main/main.jsp";
+  }
+  /*
+   *   {"gno":gno,"account":accout,"price":price,
+				 "post":post,"addr1":addr1,"addr2":addr2,
+				 "msg":msg}
+	    NO      NOT NULL NUMBER        
+		GNO              NUMBER        
+		ID               VARCHAR2(20)  
+		NAME    NOT NULL VARCHAR2(51)  
+		POST    NOT NULL VARCHAR2(10)  
+		ADDR1   NOT NULL VARCHAR2(100) 
+		ADDR2            VARCHAR2(100) 
+		MSG     NOT NULL CLOB          
+		ACCOUNT          NUMBER  
+		REGDATE 
+   */
+  @RequestMapping("goods/buy_ok.do")
+  public void goods_buy_ok(HttpServletRequest request,
+		  HttpServletResponse response)
+  {
+	  String gno=request.getParameter("gno");
+	  String account=request.getParameter("account");
+	  String price=request.getParameter("price");
+	  String post=request.getParameter("post");
+	  String addr1=request.getParameter("addr1");
+	  String addr2=request.getParameter("addr2");
+	  String msg=request.getParameter("msg");
+	  HttpSession session=request.getSession();
+	  String id=(String)session.getAttribute("id");
+	  String name=(String)session.getAttribute("name");
+	  
+	  OrdersVO vo=new OrdersVO();
+	  vo.setId(id);
+	  vo.setName(name);
+	  vo.setMsg(msg);
+	  vo.setAddr1(addr1);
+	  vo.setAddr2(addr2);
+	  vo.setPost(post);
+	  vo.setAccount(Integer.parseInt(account));
+	  vo.setGno(Integer.parseInt(gno));
+	  price=price.replaceAll("[^0-9]", "");
+	  vo.setPrice(Integer.parseInt(price));
+	  
+	  // DB 연동 
+	  GoodsDAO.orderInsert(vo);
+	  /*
+	   *   웹 사이트 
+	   *   = 아이템 설정 
+	   *   = 요구사항 (기능)
+	   *   ------------------------------- PM
+	   *   = 페이지 분석 => 필요한 데이터 추출 
+	   *   = 데이터 설계 => ERD
+	   *     ----------------
+	   *     | 화면 UI 
+	   *     | 사용자가 보내주는 데이터
+	   *     | => 테이블 
+	   *     | => 찾는 경우 : primary key
+	   *   ------------------------------- DBA
+	   *   = 화면 UI 
+	   *   ------------------------------- 퍼블리셔 
+	   *   = 구현 (기능)
+	   *   ------------------------------- 웹 개발자
+	   *   = 테스트 
+	   *   ------------------------------- 테스터
+	   *   = 배포  
+	   *   ------------------------------- SE (DevOps)
+	   */
+	  
+	  
+  }
+  
+}
+
+
+
+
+
+
+
+
+
+
+
+

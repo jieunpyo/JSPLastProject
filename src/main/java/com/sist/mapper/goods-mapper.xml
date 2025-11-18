@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sist.mapper.goods_mapper">
+  <!--  상품 목록  (전체 목록) 
+    NO                                                 NUMBER(38)
+    GOODS_NAME                                         VARCHAR2(4000)
+    GOODS_SUB                                          VARCHAR2(4000)
+    GOODS_PRICE                                        VARCHAR2(26)
+    GOODS_DISCOUNT                                     NUMBER(38)
+    GOODS_FIRST_PRICE                                  VARCHAR2(4000)
+    GOODS_DELIVERY                                     VARCHAR2(4000)
+    GOODS_POSTER                                       VARCHAR2(4000)
+    HIT           
+  -->
+  <select id="goodsListData" resultType="GoodsVO" parameterType="hashmap">
+    SELECT no,goods_name,goods_sub,goods_price,goods_discount,goods_poster,hit,num
+    FROM (SELECT no,goods_name,goods_sub,goods_price,goods_discount,goods_poster,hit,rownum as num
+    FROM (SELECT no,goods_name,goods_sub,goods_price,goods_discount,goods_poster,hit
+    FROM ${goods} ORDER BY no ASC))
+    WHERE num BETWEEN #{start} AND #{end}
+  </select>
+  <select id="goodsTotalPage" resultType="int"
+   parameterType="hashmap"
+  >
+    SELECT CEIL(COUNT(*)/12.0)
+    FROM ${goods}
+  </select>
+  <update id="goodsHitIncrement" parameterType="hashmap">
+    UPDATE ${goods} SET
+    hit=hit+1
+    WHERE no=#{no}
+  </update>
+  <select id="goodsDetailData" resultType="GoodsVO"
+    parameterType="hashmap"
+  >
+    SELECT * FROM ${goods}
+    WHERE no=#{no}
+  </select>
+  <!-- 
+        NO      NOT NULL NUMBER        
+		GNO              NUMBER        
+		ID               VARCHAR2(20)  
+		NAME    NOT NULL VARCHAR2(51)  
+		POST    NOT NULL VARCHAR2(10)  
+		ADDR1   NOT NULL VARCHAR2(100) 
+		ADDR2            VARCHAR2(100) 
+		MSG     NOT NULL CLOB          
+		ACCOUNT          NUMBER  
+		REGDATE 
+   -->
+   <insert id="orderInsert" parameterType="com.sist.vo.OrdersVO">
+    INSERT INTO mvcOrders VALUES(
+     order_no_seq.nextval,
+     #{gno},#{id},#{name},#{post},
+     #{addr1},#{addr2},#{msg},#{account},SYSDATE
+    )
+   </insert>
+   <!-- 
+        while(rs.next())
+        {
+           OrdersVO vo=new OrdersVO()
+           vo.setNo(rs.getInt(1));
+              ===== no
+           vo.gvo.setGoods_poster(rs.getString(2))
+              ====================
+              gvo.goods_poster
+           
+        }
+    -->
+   <resultMap type="com.sist.vo.OrdersVO" id="orderMap">
+     <result column="goods_poster" property="gvo.goods_poster"/>
+     <result column="goods_name" property="gvo.goods_name"/>
+     <result column="goods_price" property="gvo.goods_price"/>
+   </resultMap>
+   <select id="orderListData" parameterType="string"
+    resultMap="orderMap"
+   >
+    SELECT mo.no,gno,goods_poster,goods_name,goods_price,
+           account,TO_CHAR(regdate,'YYYY-MM-DD') as dbday
+    FROM mvcOrders mo,goods_all ga
+    WHERE mo.gno=ga.no
+    AND id=#{id}
+   </select>
+   <select id="orderDetailData" parameterType="int"
+    resultMap="orderMap"
+   >
+     SELECT mo.no,gno,goods_poster,goods_name,goods_price,
+           account,TO_CHAR(regdate,'YYYY-MM-DD') as dbday,
+           name,addr1,addr2,post,msg
+    FROM mvcOrders mo,goods_all ga
+    WHERE mo.gno=ga.no
+    AND mo.no=#{no}
+   </select>
+</mapper>

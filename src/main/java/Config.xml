@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+ "https://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+  <properties resource="db.properties"/>
+  <!-- 
+      getConnection() / disConnection()
+      
+   -->
+  <typeAliases>
+    <typeAlias type="com.sist.vo.FoodVO" alias="FoodVO"/>
+    <typeAlias type="com.sist.vo.GoodsVO" alias="GoodsVO"/>
+    <typeAlias type="com.sist.vo.ChefVO" alias="ChefVO"/>
+    <typeAlias type="com.sist.vo.BoardVO" alias="BoardVO"/>
+    <typeAlias type="com.sist.vo.BoardReplyVO" alias="BoardReplyVO"/>
+    <typeAlias type="com.sist.vo.LikeVO" alias="LikeVO"/>
+    <typeAlias type="com.sist.vo.JjimVO" alias="JjimVO"/>
+  </typeAliases>
+  <environments default="develpoment">
+    <environment id="develpoment">
+      <transactionManager type="JDBC"/><!-- AutoCommit/AutoRollback -->
+      <dataSource type="POOLED"><!-- Connection을 미리 생성 기본:8 -->
+        <property name="driver" value="${driver}"/>
+        <property name="url" value="${url}"/>
+        <property name="username" value="${username}"/>
+        <property name="password" value="${password}"/>
+      </dataSource>
+    </environment>
+  </environments>
+  <mappers>
+    <mapper resource="com/sist/mapper/food-mapper.xml"/>
+    <mapper resource="com/sist/mapper/main-mapper.xml"/>
+    <mapper resource="com/sist/mapper/goods-mapper.xml"/>
+    <mapper resource="com/sist/mapper/recipe-mapper.xml"/>
+    <mapper resource="com/sist/mapper/board-mapper.xml"/>
+    <mapper resource="com/sist/mapper/member-mapper.xml"/>
+    <mapper resource="com/sist/mapper/reply-mapper.xml"/>
+    <mapper resource="com/sist/mapper/emp-mapper.xml"/>
+    <mapper resource="com/sist/mapper/like-mapper.xml"/>
+    <mapper resource="com/sist/mapper/jjim-mapper.xml"/>
+    <mapper resource="com/sist/mapper/reserve-mapper.xml"/>
+    <mapper resource="com/sist/mapper/mypage-mapper.xml"/>
+    <mapper resource="com/sist/mapper/admin-mapper.xml"/>
+    <mapper resource="com/sist/mapper/review-mapper.xml"/>
+    <mapper resource="com/sist/mapper/cart-mapper.xml"/>
+    <mapper resource="com/sist/mapper/qna-mapper.xml"/>
+  </mappers>
+</configuration>
