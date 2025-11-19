@@ -206,7 +206,7 @@
 	     <c:forTokens items="${vo.filename }" delims=","
 	      var="files"
 	     >
-	      <li><a href="#">${files}</a></li>
+	      <li><a href="../notice/download.do?fn=${files }">${files}</a></li>
 	     </c:forTokens>
 	    </ul>
 	  </div>
