@@ -1,3 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.sist.mapper.notice-mapper"></mapper>
+<mapper namespace="com.sist.mapper.notice-mapper">
+  <!-- 
+  		NO       NOT NULL NUMBER         
+		STATE    NOT NULL VARCHAR2(20)   
+		NAME              VARCHAR2(51)   
+		SUBJECT  NOT NULL VARCHAR2(2000) 
+		CONTENT  NOT NULL CLOB           
+		REGDATE           DATE           
+		HIT               NUMBER         
+		FILENAME          VARCHAR2(260)  
+		FILESIZE          VARCHAR2(200)
+   -->
+   <insert id="noticeInsert" parameterType="com.sist.vo.NoticeVO">
+     INSERT INTO notice VALUES(
+       notice_no_seq.nextval,
+       #{state},#{name},#{subject},#{content},
+       SYSDATE, 0 , #{filename}, #{filesize}
+     )
+   </insert>
+   <select id="noticeListData" parameterType="int"
+    resultType="com.sist.vo.NoticeVO"
+   >
+     SELECT no,state,name,subject,
+     	  TO_CHAR(regdate,'YYYY-MM-DD') as dbday,hit
+     FROM notice
+     ORDER BY no DESC
+     OFFSET #{start} ROWS FETCH NEXT 10 ROWS ONLY
+   </select>
+   <select id="noticeTotalPage" resultType="int">
+     SELECT CEIL(COUNT(*)/10.0) 
+     FROM notice
+   </select>
+   <!-- 
+   	   상세보기 = 다운로드
+   	   수정 
+   	   삭제 
+    -->
+</mapper>

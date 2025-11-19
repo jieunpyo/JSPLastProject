@@ -8,7 +8,7 @@
 <style>
 /* 컨테이너 */
 .notice-table-wrap {
-  max-width: 980px;
+  width: 980px;
   margin: 20px auto;
   background: #fff;
   border-radius: 12px;
@@ -60,12 +60,12 @@
 }
 
 /* 컬럼 너비 */
-.col-no { width: 60px; }
-.col-type { width: 90px; }
+.col-no { width: 100px; }
+.col-type { width: 130px; }
 .col-title { width: auto; }
-.col-writer { width: 120px; }
-.col-date { width: 130px; }
-.col-view { width: 90px; }
+.col-writer { width: 150px; }
+.col-date { width: 180px; }
+.col-view { width: 120px; }
 
 /* 행 hover */
 .notice-table tbody tr:hover {
@@ -151,7 +151,7 @@
 <section class="notice-table-wrap">
   <h2 class="notice-title">공지사항</h2>
   <div class="detail-nav">
-    <a href="notice_insert.jsp" class="btn primary nav-btn">등록</a>
+    <a href="../admin/notice_insert.do" class="btn primary nav-btn">등록</a>
   </div>
   <div style="height: 10px"></div>
   <table class="notice-table">
@@ -170,7 +170,7 @@
       <tr>
         <td>15</td>
         <td><span class="badge badge-emergency">긴급</span></td>
-        <td class="title-cell"><a href="../notice/detail.do">서버 장애 발생 안내</a></td>
+        <td class="title-cell"><a href="../admin/notice_detail.do">서버 장애 발생 안내</a></td>
         <td>관리자</td>
         <td>2025-11-11</td>
         <td>342</td>
