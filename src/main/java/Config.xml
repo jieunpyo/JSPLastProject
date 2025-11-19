@@ -45,5 +45,6 @@
     <mapper resource="com/sist/mapper/review-mapper.xml"/>
     <mapper resource="com/sist/mapper/cart-mapper.xml"/>
     <mapper resource="com/sist/mapper/qna-mapper.xml"/>
+    <mapper resource="com/sist/mapper/notice-mapper.xml"/>
   </mappers>
 </configuration>

@@ -2,6 +2,8 @@ package com.sist.model;
 
 import java.util.List;
 
+import org.eclipse.tags.shaded.org.apache.xalan.templates.AVTPartSimple;
+
 import com.sist.controller.Controller;
 import com.sist.controller.RequestMapping;
 import com.sist.dao.AdminDAO;
@@ -70,15 +72,15 @@ public class AdminModel {
 	  // => Spring / Spring - Boot 
   }
   /*
-   *   NO       NOT NULL NUMBER    		(X)
-  	STATE    NOT NULL VARCHAR2(20)   
-  	NAME              VARCHAR2(51)   	(X)
-  	SUBJECT  NOT NULL VARCHAR2(2000) 
-  	CONTENT  NOT NULL CLOB           
-  	REGDATE           DATE           	(*)
-  	HIT               NUMBER         	(*)
-  	FILENAME          VARCHAR2(260)  
-  	FILESIZE          VARCHAR2(200)
+   *    NO       NOT NULL NUMBER   (X)      
+		STATE    NOT NULL VARCHAR2(20)   
+		NAME              VARCHAR2(51)  (X) 
+		SUBJECT  NOT NULL VARCHAR2(2000) 
+		CONTENT  NOT NULL CLOB           
+		REGDATE           DATE  (*)         
+		HIT               NUMBER   (*)      
+		FILENAME          VARCHAR2(260)  
+		FILESIZE          VARCHAR2(200)
    */
   @RequestMapping("admin/notice_insert_ok.do")
   public String admin_notice_insert_ok(HttpServletRequest request,HttpServletResponse response)
@@ -90,7 +92,7 @@ public class AdminModel {
 	  String state=request.getParameter("state");
 	  NoticeVO vo=new NoticeVO();
 	  vo.setState(state);
-	  vo.setSubject(content);
+	  vo.setContent(content);
 	  vo.setSubject(subject);
 	  vo.setName("관리자");
 	  
@@ -102,9 +104,10 @@ public class AdminModel {
 		  System.out.println(file.getPath());
 		  String path=file.getPath();
 		  path=path.replace("\\", File.separator);
-		  // 우분투 => / 윈도우 => \\
+		  // 우분투 => /  윈도우 => \\
 		  path=path.substring(0,path.lastIndexOf(File.separator));
 		  path=path.substring(0,path.lastIndexOf(File.separator));
+		  // C:\webDev\webStudy\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\JSPLastProject/uploads
 		  // 저장 공간 
 		  path=path+File.separator+"uploads";
 		  File dir=new File(path);
@@ -115,22 +118,23 @@ public class AdminModel {
 		  // => realpath
 		  // 업로드 파일 읽기 => uploads에 저장 
 		  ServletContext context
-		  	   = request.getServletContext();
+		       = request.getServletContext();
 		  // JSP => application객체 => getRealPath
 		  String uploadPath=context.getRealPath("/uploads");
 		  boolean bCheck=false;
 		  
 		  /*
-		   *    Part
-		   *    -----
-		   *      Part : text input(name="subject")
-		   *      Part : text textarea(name="content")
-		   *      Part : file input(file="images")
-		   *      Part : file input(file="images")
-		   *      Part : file input(file="images")
+		   *   Part 
+		   *   -----
+		   *     Part : text input(name="subject")
+		   *     Part : text textarea(name="content")
+		   *     Part : file input(file="images")
+		   *     Part : file input(file="images")
+		   *     Part : file input(file="images")
 		   */
 		  String fn="";
 		  String fs="";
+		  int count=0;
 		  for(Part part:request.getParts())
 		  {
 			  if("images".equals(part.getName()) && part.getSize()>0)
@@ -138,7 +142,7 @@ public class AdminModel {
 				  bCheck=true;
 				  // 사용자가 올려준 실제 이미지 이름 
 				  String ofileName=Paths.get(part.getSubmittedFileName())
-						  		  .getFileName().toString();
+						          .getFileName().toString();
 				  System.out.println(ofileName);
 				  String fileName=System.currentTimeMillis()+"_"+ofileName;
 				  System.out.println(fileName);
@@ -149,7 +153,7 @@ public class AdminModel {
 				  File dbFile=new File(savePath);
 				  fn+=fileName+",";
 				  fs+=dbFile.length()+",";
-				  
+				  count++;
 			  }
 		  }
 		  
@@ -158,6 +162,7 @@ public class AdminModel {
 			  System.out.println("파일 업로드가 없습니다");
 			  vo.setFilename("");
 			  vo.setFilesize("");
+			  vo.setFilecount(0);
 		  }
 		  else
 		  {
@@ -165,8 +170,10 @@ public class AdminModel {
 			  fs=fs.substring(0,fs.lastIndexOf(","));
 			  vo.setFilename(fn);
 			  vo.setFilesize(fs);
+			  vo.setFilecount(count);
 			  System.out.println(fn);
 			  System.out.println(fs);
+			  
 		  }
 		  
 		  NoticeDAO.noticeInsert(vo);
@@ -174,10 +181,29 @@ public class AdminModel {
 	  return "redirect:../admin/notice_list.do";
 	  // sendRedirect => request가 초기화 => 이미 실행된 화면 재수행
   }
-  // 공지상세보기
+  // 공지상세보기 
   @RequestMapping("admin/notice_detail.do")
   public String admin_notice_detail(HttpServletRequest request,HttpServletResponse response)
   {
+	  // <form> <a> , ajax 
+	  /*
+	   *   <a href=".do?no=1">
+	   *   <form action="">
+	   *               ---- 값을 받는다 
+	   *   => input / select / textarea
+	   *      | hidden 포함 
+	   *   ajax 
+	   *     => data:{"no":1} => ?no=1
+	   *   axios : Vue / React => fetch
+	   *           ----------- 화면 UI
+	   *     => params:{"no":1}
+	   */
+	  String no=request.getParameter("no");
+	  // 사용자가 선택해서 => 상세보기 요청 => no
+	  // DB 연동 
+	  NoticeVO vo=
+		NoticeDAO.noticeDetailData(Integer.parseInt(no));
+	  request.setAttribute("vo", vo);
 	  request.setAttribute("admin_jsp", "../admin/notice_detail.jsp");
 	  return "../admin/admin_main.jsp";
   }

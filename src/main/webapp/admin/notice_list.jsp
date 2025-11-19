@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="jakarta.tags.core"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -165,42 +166,43 @@
         <th class="col-view">조회수</th>
       </tr>
     </thead>
-
+     <%--
+        <option value="normal">일반</option>
+        <option value="emergency">긴급</option>
+        <option value="maintain">점검</option>
+        <option value="event">이벤트</option>
+      --%>
     <tbody>
+      <c:forEach var="vo" items="${list }">
+      <c:choose>
+        <c:when test="${vo.state=='normal' }">
+         <c:set var="state" value="일반"/>
+        </c:when>
+        <c:when test="${vo.state=='emergency' }">
+         <c:set var="state" value="긴급"/>
+        </c:when>
+        <c:when test="${vo.state=='maintain' }">
+         <c:set var="state" value="점검"/>
+        </c:when>
+        <c:when test="${vo.state=='event' }">
+         <c:set var="state" value="이벤트"/>
+        </c:when>
+      </c:choose>
       <tr>
-        <td>15</td>
-        <td><span class="badge badge-emergency">긴급</span></td>
-        <td class="title-cell"><a href="../admin/notice_detail.do">서버 장애 발생 안내</a></td>
-        <td>관리자</td>
-        <td>2025-11-11</td>
-        <td>342</td>
+        <td>${vo.no }</td>
+        <td><span class="badge badge-${vo.state }">${state }</span></td>
+        <td class="title-cell"><a href="../admin/notice_detail.do?no=${vo.no }">${vo.subject }</a></td>
+        <td>${vo.name }</td>
+        <td>${vo.dbday }</td>
+        <td>${vo.hit }</td>
       </tr>
-
+      </c:forEach>
       <tr>
-        <td>14</td>
-        <td><span class="badge badge-maintain">점검</span></td>
-        <td class="title-cell"><a href="#">11월 시스템 점검 일정</a></td>
-        <td>관리자</td>
-        <td>2025-11-02</td>
-        <td>132</td>
-      </tr>
-
-      <tr>
-        <td>13</td>
-        <td><span class="badge badge-event">이벤트</span></td>
-        <td class="title-cell"><a href="#">블랙프라이데이 할인 안내</a></td>
-        <td>마케팅팀</td>
-        <td>2025-11-01</td>
-        <td>88</td>
-      </tr>
-
-      <tr>
-        <td>12</td>
-        <td><span class="badge badge-normal">일반</span></td>
-        <td class="title-cell"><a href="#">새로운 기능 업데이트</a></td>
-        <td>관리자</td>
-        <td>2025-10-29</td>
-        <td>201</td>
+       <td class="text-center" colspan="6">
+         <a href="../admin/notice_list.do?page=${curpage>1?curpage-1:curpage }">이전</a>
+         ${curpage } page / ${totalpage } pages
+         <a href="../admin/notice_list.do?page=${curpage<totalpage?curpage+1:curpage }">다음</a>
+       </td>
       </tr>
     </tbody>
   </table>

@@ -2,13 +2,13 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sist.mapper.notice-mapper">
   <!-- 
-  		NO       NOT NULL NUMBER         
+        NO       NOT NULL NUMBER   (X)      
 		STATE    NOT NULL VARCHAR2(20)   
-		NAME              VARCHAR2(51)   
+		NAME              VARCHAR2(51)  (X) 
 		SUBJECT  NOT NULL VARCHAR2(2000) 
 		CONTENT  NOT NULL CLOB           
-		REGDATE           DATE           
-		HIT               NUMBER         
+		REGDATE           DATE  (*)         
+		HIT               NUMBER   (*)      
 		FILENAME          VARCHAR2(260)  
 		FILESIZE          VARCHAR2(200)
    -->
@@ -16,14 +16,14 @@
      INSERT INTO notice VALUES(
        notice_no_seq.nextval,
        #{state},#{name},#{subject},#{content},
-       SYSDATE, 0 , #{filename}, #{filesize}
+       SYSDATE , 0 , #{filename},#{filesize},#{filecount}
      )
    </insert>
    <select id="noticeListData" parameterType="int"
     resultType="com.sist.vo.NoticeVO"
    >
      SELECT no,state,name,subject,
-     	  TO_CHAR(regdate,'YYYY-MM-DD') as dbday,hit
+          TO_CHAR(regdate,'YYYY-MM-DD') as dbday,hit
      FROM notice
      ORDER BY no DESC
      OFFSET #{start} ROWS FETCH NEXT 10 ROWS ONLY
@@ -33,8 +33,21 @@
      FROM notice
    </select>
    <!-- 
-   	   상세보기 = 다운로드
-   	   수정 
-   	   삭제 
+       상세보기 = 다운로드
+       수정 
+       삭제 
     -->
+   <update id="noticeHitIncrement" parameterType="int">
+    UPDATE notice SET
+    hit=hit+1
+    WHERE no=#{no}
+   </update>
+   <select id="noticeDetailData" resultType="com.sist.vo.NoticeVO"
+    parameterType="int"
+   >
+     SELECT no,name,state,subject,content,hit,filename,filesize,filecount,
+            TO_CHAR(regdate,'YYYY-MM-DD HH24:MI:SS') as dbday
+     FROM notice
+     WHERE no=#{no}
+   </select>
 </mapper>

@@ -58,11 +58,11 @@ public class NoticeDAO {
 	  // 여러개 동시에 사용 => 공통 모듈 => 중복 제거
   }
   /*
-   * 	<select id="noticeListData" parameterType="int"
+   *   <select id="noticeListData" parameterType="int"
 	    resultType="com.sist.vo.NoticeVO"
 	   >
 	     SELECT no,state,name,subject,
-	     	  TO_CHAR(regdate,'YYYY-MM-DD') as dbday,hit
+	          TO_CHAR(regdate,'YYYY-MM-DD') as dbday,hit
 	     FROM notice
 	     ORDER BY no DESC
 	     OFFSET #{start} ROWS FETCH NEXT 10 ROWS ONLY
@@ -73,11 +73,11 @@ public class NoticeDAO {
 	   </select>
    */
   /*
-   * 	<insert id="noticeInsert" parameterType="com.sist.vo.NoticeVO">
+   *   <insert id="noticeInsert" parameterType="com.sist.vo.NoticeVO">
 	     INSERT INTO notice VALUES(
 	       notice_no_seq.nextval,
 	       #{state},#{name},#{subject},#{content},
-	       SYSDATE, 0 , #{filename}, #{filesize}
+	       SYSDATE , 0 , #{filename},#{filesize}
 	     )
 	   </insert>
    */
@@ -120,5 +120,34 @@ public class NoticeDAO {
 		  ex.printStackTrace();
 	  }
 	  return total;
+  }
+  /*
+   *   <update id="noticeHitIncrement" parameterType="int">
+    UPDATE notice SET
+    hit=hit+1
+    WHERE no=#{no}
+   </update>
+   <select id="noticeDetailData" resultType="com.sist.vo.NoticeVO"
+    parameterType="int"
+   >
+     SELECT * FROM notice
+     WHERE no=#{no}
+   </select>
+   */
+  public static NoticeVO noticeDetailData(int no)
+  {
+	  NoticeVO vo=null;
+	  try
+	  {
+		  SqlSession session=ssf.openSession();
+		  session.update("noticeHitIncrement",no);
+		  session.commit();
+		  vo=session.selectOne("noticeDetailData",no);
+		  session.close();
+	  }catch(Exception ex)
+	  {
+		  ex.printStackTrace();
+	  }
+	  return vo;
   }
 }
